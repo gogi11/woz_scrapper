@@ -19,6 +19,11 @@ def parse_json_save_to_sqlite(json_string, coords, id):
     long = coords["x"]
     lat = coords["y"]
 
+    price_2015 = 0
+    price_2016 = 0
+    price_2017 = 0
+    price_2018 = 0
+
     json_obj = None
 
     try:
@@ -33,10 +38,23 @@ def parse_json_save_to_sqlite(json_string, coords, id):
         "longitude": long,
         "latitude": lat
     }
+    for feature in json_obj["features"]:
+        prop = feature["properties"]
+        if "2015" in prop["wobj_wrd_peildatum"]:
+            price_2015 = prop["wobj_wrd_woz_waarde"]
+        if "2016" in prop["wobj_wrd_peildatum"]:
+            price_2016 = prop["wobj_wrd_woz_waarde"]
+        if "2017" in prop["wobj_wrd_peildatum"]:
+            price_2017 = prop["wobj_wrd_woz_waarde"]
+        if "2018" in prop["wobj_wrd_peildatum"]:
+            price_2018 = prop["wobj_wrd_woz_waarde"]
+
 
     try:
         with open('./exported_data.csv', 'a+') as export:
-            export.write(str(hnr) + "," + str(post) + "," + str(long) + "," + str(lat)+"\n")
+            export.write(str(hnr) + "," + str(post) + "," + str(long) + "," + str(lat)+
+                         str(price_2015) + "," + str(price_2016) + "," +
+                         str(price_2017) + "," + str(price_2018) + ","+"\n")
     except:
         print("There was an error with saving to db.")
 
